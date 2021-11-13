@@ -10,4 +10,4 @@ class Rot8 extends ShiftCipher {
   }
 }
 
-export default Rot8
+export default Rot8;
