@@ -2,6 +2,7 @@ import fs from 'fs';
 import { pipeline } from 'stream';
 import { getConfig } from './src/helper.js';
 import Caesar from './src/streams/caesar.js';
+import Rot8 from './src/streams/rot8.js';
 
 const { argv } = process;
 
@@ -13,10 +14,12 @@ const readableStream = fs.createReadStream(config.input);
 const writeableStream = fs.createWriteStream(config.output);
 
 const caesarStream = new Caesar('C1');
+const rot8Stream = new Rot8('R0');
 
 pipeline(
   readableStream,
-  caesarStream,
+  // caesarStream,
+  rot8Stream,
   writeableStream,
   (err) => {
     if (err) {
