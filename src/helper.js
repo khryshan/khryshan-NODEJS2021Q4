@@ -11,7 +11,7 @@ export const showError = (mes) => {
 
 export const getConfig = (args) => {
   const modArgs = {
-    config: '',
+    params: '',
     input: '',
     output: '',
   };
@@ -32,7 +32,7 @@ export const getConfig = (args) => {
             }
           })
 
-          modArgs.config = conf;
+          modArgs.params = conf;
         }
       }
 

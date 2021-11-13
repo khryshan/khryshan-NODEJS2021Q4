@@ -14,15 +14,21 @@ const config = getConfig(inputArgs);
 const readableStream = fs.createReadStream(config.input);
 const writeableStream = fs.createWriteStream(config.output);
 
-const atbashStream = new Atbash('A');
-const caesarStream = new Caesar('C1');
-const rot8Stream = new Rot8('R0');
+const cipherStreams = config.params.split('-').map(stream => {
+  if(stream.indexOf("A") !== -1) {
+    return new Atbash();
+  }
+  if(stream.indexOf("C") !== -1) {
+    return new Caesar(stream)
+  }
+  if(stream.indexOf("R") !== -1) {
+    return new Rot8(stream)
+  }
+})
 
 pipeline(
   readableStream,
-  atbashStream,
-  // caesarStream,
-  // rot8Stream,
+  ...cipherStreams,
   writeableStream,
   (err) => {
     if (err) {
