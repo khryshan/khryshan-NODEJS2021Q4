@@ -5,14 +5,19 @@ import Atbash from './src/streams/atbash.js';
 import Caesar from './src/streams/caesar.js';
 import Rot8 from './src/streams/rot8.js';
 
-const { argv } = process;
+const { argv, stdin, stdout } = process;
 
 const inputArgs = argv.slice(2);
 const config = getConfig(inputArgs);
+console.log('config: ', config);
 
-// TODO: if input empty string use process.stdin
-const readableStream = fs.createReadStream(config.input);
-const writeableStream = fs.createWriteStream(config.output,  { flags: 'a'});
+const readableStream = config.input !== "" 
+  ? fs.createReadStream(config.input)
+  : stdin;
+
+const writeableStream = config.output !== "" 
+  ? fs.createWriteStream(config.output,  { flags: 'a'})
+  : stdout;
 
 const cipherStreams = config.params.split('-').map(stream => {
   if(stream.indexOf("A") !== -1) {

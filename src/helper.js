@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-const { exit, stdin } = process;
+const { exit } = process;
 
 const checkIsConfig = (item) => {
   return item === '-c' || item === '--config';
@@ -45,8 +45,6 @@ export const getConfig = (args) => {
         }
       }
 
-      // TODO: add one function for input & output conditions
-      // TODO: heandle empty string
       if (item === '-i' || item === '--input') {
         const inputPath = args[index + 1]?.trim() || '';
         if(existsSync(inputPath)) {
