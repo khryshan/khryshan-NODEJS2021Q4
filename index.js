@@ -9,7 +9,6 @@ const { argv, stdin, stdout } = process;
 
 const inputArgs = argv.slice(2);
 const config = getConfig(inputArgs);
-console.log('config: ', config);
 
 const readableStream = config.input !== "" 
   ? fs.createReadStream(config.input)
