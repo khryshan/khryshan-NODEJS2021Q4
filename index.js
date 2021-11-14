@@ -12,7 +12,7 @@ const config = getConfig(inputArgs);
 
 // TODO: if input empty string use process.stdin
 const readableStream = fs.createReadStream(config.input);
-const writeableStream = fs.createWriteStream(config.output);
+const writeableStream = fs.createWriteStream(config.output,  { flags: 'a'});
 
 const cipherStreams = config.params.split('-').map(stream => {
   if(stream.indexOf("A") !== -1) {

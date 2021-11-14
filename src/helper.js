@@ -1,12 +1,17 @@
-const { exit } = process;
+import { existsSync } from 'fs';
+const { exit, stdin } = process;
 
 const checkIsConfig = (item) => {
   return item === '-c' || item === '--config';
 }
 
+const checkDuplicate = (array) => {
+  return new Set(array).size !== array.length
+}
+
 export const showError = (mes) => {
-  console.error("\x1b[31m", mes);
-  exit(0);
+  process.stderr.write(mes);
+  exit(1);
 }
 
 export const getConfig = (args) => {
@@ -17,6 +22,10 @@ export const getConfig = (args) => {
   };
 
   if(args.some(checkIsConfig)) {
+
+    if (checkDuplicate(args)) {
+      showError("ERROR: Check your config. Perhaps, there are duplicates of configurations.");
+    }
     args.forEach((item, index) => {
       if (item === '-c' || item === '--config') {
         const conf = args[index + 1]?.trim();
@@ -36,12 +45,24 @@ export const getConfig = (args) => {
         }
       }
 
+      // TODO: add one function for input & output conditions
+      // TODO: heandle empty string
       if (item === '-i' || item === '--input') {
-        modArgs.input = args[index + 1]?.trim() || '';
+        const inputPath = args[index + 1]?.trim() || '';
+        if(existsSync(inputPath)) {
+          modArgs.input = inputPath;
+        } else {
+          showError("ERROR: Check your input file path");
+        }
       }
 
       if (item === '-o' || item === '--output') {
-        modArgs.output = args[index + 1]?.trim() || '';
+        const outputPath = args[index + 1]?.trim() || '';
+        if(existsSync(outputPath)) {
+          modArgs.output = outputPath;
+        } else {
+          showError("ERROR: Check your output file path");
+        }
       }
     });
   
