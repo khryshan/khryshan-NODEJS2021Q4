@@ -1,17 +1,16 @@
 import { existsSync } from 'fs';
-const { exit } = process;
 
-const checkIsConfig = (item) => {
+export const checkIsConfig = (item) => {
   return item === '-c' || item === '--config';
 }
 
-const checkDuplicate = (array) => {
+export const checkDuplicate = (array) => {
   return new Set(array).size !== array.length
 }
 
 export const showError = (mes) => {
   process.stderr.write(mes);
-  exit(1);
+  process.exit(1);
 }
 
 export const getConfig = (args) => {
