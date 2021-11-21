@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-course",
+  "version": "1.0.0",
+  "description": "rolling-scopes-school",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules --no-warnings node_modules/.bin/jest",
+    "test --coverage": "test --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khryshan/khryshan-NODEJS2021Q4.git"
+  },
+  "author": "Kostya",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/khryshan/khryshan-NODEJS2021Q4/issues"
+  },
+  "homepage": "https://github.com/khryshan/khryshan-NODEJS2021Q4#readme",
+  "devDependencies": {
+    "jest": "^27.3.1"
+  }
+}
