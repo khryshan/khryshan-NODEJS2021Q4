@@ -17,12 +17,6 @@
   "bugs": {
     "url": "https://github.com/khryshan/khryshan-NODEJS2021Q4/issues"
   },
-  "jest": {
-    "verbose": true,
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ]
-  },
   "homepage": "https://github.com/khryshan/khryshan-NODEJS2021Q4#readme",
   "devDependencies": {
     "jest": "^27.3.1"
