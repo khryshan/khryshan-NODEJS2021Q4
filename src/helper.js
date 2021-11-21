@@ -1,11 +1,20 @@
 import { existsSync } from 'fs';
 
 export const checkIsConfig = (item) => {
-  return item === '-c' || item === '--config';
+  return item === '-c';
 }
 
 export const checkDuplicate = (array) => {
   return new Set(array).size !== array.length
+}
+
+export const updateArgs = (array) => {
+  return array.map(item => {
+    if (item === '--config') return '-c';
+    if (item === '--input') return '-i';
+    if (item === '--output') return '-o';
+    return item;
+  })
 }
 
 export const showError = (mes) => {
@@ -14,20 +23,22 @@ export const showError = (mes) => {
 }
 
 export const getConfig = (args) => {
-  const modArgs = {
+  const resArgs = {
     params: '',
     input: '',
     output: '',
   };
+  
+  const modArgs = updateArgs(args);
+  
+  if(modArgs.some(checkIsConfig)) {
 
-  if(args.some(checkIsConfig)) {
-
-    if (checkDuplicate(args)) {
+    if (checkDuplicate(modArgs)) {
       showError("ERROR: Check your config. Perhaps, there are duplicates of configurations.");
     }
-    args.forEach((item, index) => {
-      if (item === '-c' || item === '--config') {
-        const conf = args[index + 1]?.trim();
+    modArgs.forEach((item, index) => {
+      if (item === '-c') {
+        const conf = modArgs[index + 1]?.trim();
         
         if(conf) {
           if(conf[conf.length - 1] === "-") {
@@ -40,23 +51,23 @@ export const getConfig = (args) => {
             }
           })
 
-          modArgs.params = conf;
+          resArgs.params = conf;
         }
       }
 
-      if (item === '-i' || item === '--input') {
-        const inputPath = args[index + 1]?.trim() || '';
+      if (item === '-i') {
+        const inputPath = modArgs[index + 1]?.trim() || '';
         if(existsSync(inputPath)) {
-          modArgs.input = inputPath;
+          resArgs.input = inputPath;
         } else {
           showError("ERROR: Check your input file path");
         }
       }
 
-      if (item === '-o' || item === '--output') {
-        const outputPath = args[index + 1]?.trim() || '';
+      if (item === '-o') {
+        const outputPath = modArgs[index + 1]?.trim() || '';
         if(existsSync(outputPath)) {
-          modArgs.output = outputPath;
+          resArgs.output = outputPath;
         } else {
           showError("ERROR: Check your output file path");
         }
@@ -67,5 +78,5 @@ export const getConfig = (args) => {
     showError("ERROR: Config option is required! Try use '-c' or '--config'")
   }
 
-  return modArgs;
+  return resArgs;
 }
