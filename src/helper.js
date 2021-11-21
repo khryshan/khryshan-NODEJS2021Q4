@@ -42,12 +42,12 @@ export const getConfig = (args) => {
         
         if(conf) {
           if(conf[conf.length - 1] === "-") {
-            showError("ERROR: Check your config");
+            showError("ERROR: Complete your config.");
           } 
 
           conf.split('-').forEach(item => {
             if(item !== 'C0' && item !== 'C1' && item !== 'R0' && item !== 'R1' && item !== 'A') {
-              showError("ERROR: Check your config");
+              showError("ERROR: Check your config.");
             }
           })
 

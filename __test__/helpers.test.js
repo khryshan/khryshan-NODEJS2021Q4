@@ -77,7 +77,14 @@ describe('check the showError() method', () => {
   })
 })
 
-describe('check the getConfig() method', () => {
+describe('check the getConfig() method (Success scenarios)', () => {
+  test('user passes correct sequence of symbols as argument for --config', () => {
+    const args = ['-c', 'C1-C1-R0-A', '-i', './input.txt', '-o', './output.txt'];
+    const result = { params: 'C1-C1-R0-A', input: './input.txt', output: './output.txt'};
+
+    expect(getConfig(args)).toEqual(result);
+  });
+
   test('there is all correct arguments', () => {
     const args = ['-c', 'C1', '-i', './input.txt', '-o', './output.txt'];
     const result = { params: 'C1', input: './input.txt', output: './output.txt'};
@@ -99,3 +106,105 @@ describe('check the getConfig() method', () => {
     expect(getConfig(args)).toEqual(result);
   });
 });
+
+describe('check the getConfig() method (Error scenarios)', () => {
+  beforeEach(() => {
+    mockProcessError.mockClear();
+    mockProcessExit.mockClear();
+  });
+
+  test('user does not pass -c or --config argument (no arguments)', () => {
+    getConfig([]);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Config option is required! Try use '-c' or '--config'");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user does not pass -c or --config argument', () => {
+    const args = ['-i', './input.txt', '-o', './output.txt'];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Config option is required! Try use '-c' or '--config'");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user passes the same cli argument twice (e.g. -c)', () => {
+    const args = ['-c', 'A-R0', '-i', './input.txt', '-o', './output.txt', '-c', 'A-R0'];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Check your config. Perhaps, there are duplicates of configurations.");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user passes the same cli argument twice (e.g. -c and --config)', () => {
+    const args = ['-c', 'A-R0', '-i', './input.txt', '-o', './output.txt', '--config', 'A-R0'];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Check your config. Perhaps, there are duplicates of configurations.");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user passes the same cli argument twice (e.g. -i)', () => {
+    const args = ['-c', 'A-R0', '-i', './input.txt', '-o', './output.txt', '-i', './input2.txt'];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Check your config. Perhaps, there are duplicates of configurations.");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user passes the same cli argument twice (e.g. -o)', () => {
+    const args = ['-c', 'A-R0', '-i', './input.txt', '-o', './output.txt', '-o', './output2.txt'];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Check your config. Perhaps, there are duplicates of configurations.");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user passes -i argument with path that does not exist', () => {
+    const args = ['-c', 'A-R0', '-i', './no-exist-input-file.txt'];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Check your input file path");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user passes -i argument with path with no read access', () => {
+    const args = ['-c', 'A-R0', '-i', ''];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Check your input file path");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user passes -o argument with path to directory that does not exist or with no read access', () => {
+    const args = ['-c', 'A-R0', '-o', './no-exist-output-file.txt'];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Check your output file path");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user passes -o argument with path to directory with no read access', () => {
+    const args = ['-c', 'A-R0', '-o', ''];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Check your output file path");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user passes incorrent symbols in argument for --config', () => {
+    const args = ['-c', 'A-R0-W'];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Check your config.");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  test('user does not finish passing the symbols in argument for --config', () => {
+    const args = ['-c', 'A-R0-'];
+
+    getConfig(args);
+    expect(mockProcessError).toHaveBeenCalledWith("ERROR: Complete your config.");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+});
+
